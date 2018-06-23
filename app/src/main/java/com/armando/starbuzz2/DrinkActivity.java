@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/*Para el check*/
 import android.widget.CheckBox;
 import android.content.ContentValues;
 
@@ -52,7 +53,7 @@ public class DrinkActivity extends Activity {
                 photo.setImageResource(photoId);
                 photo.setContentDescription(nameText);
 
-                CheckBox favorite = (CheckBox) findViewById(R.id.checkFavorite);
+                CheckBox favorite = (CheckBox) findViewById(R.id.checkDrinkFavorite);
                 favorite.setChecked(isFavorite);
             }
             cursor.close();
@@ -66,7 +67,7 @@ public class DrinkActivity extends Activity {
     public void onFavoriteClicked(View view) {
         int drinkId = (Integer) getIntent().getExtras().get(EXTRA_DRINKID);
 
-        CheckBox favorite = (CheckBox) findViewById(R.id.checkFavorite);
+        CheckBox favorite = (CheckBox) findViewById(R.id.checkDrinkFavorite);
         ContentValues drinkValues = new ContentValues();
         drinkValues.put("FAVORITE", favorite.isChecked());
 
