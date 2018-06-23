@@ -54,14 +54,10 @@ public class TopLevelActivity extends Activity {
         }
 
         listFavorites.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            int i=0;
             Intent intent = null;
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println(position);
-                while (i++!=position);
-                favoritesCursor.moveToPosition(--i);
-                System.out.println(favoritesCursor.getString(2));
+                favoritesCursor.moveToPosition(position);
 
                 String type = favoritesCursor.getString(2);
                 switch (type)
@@ -111,5 +107,18 @@ public class TopLevelActivity extends Activity {
         };
         ListView listView = (ListView) findViewById(R.id.list_options);
         listView.setOnItemClickListener(itemClickListener);
+    }
+
+    @Override
+    public void onRestart(){
+        super.onRestart();
+        String query = "select _id, NAME, 'DRINK' as TYPE from DRINK where FAVORITE = 1 union " +
+                "select _id, NAME, 'FOOD' as TYPE from FOOD where FAVORITE = 1 union " +
+                "select _id, NAME, 'STORE' as TYPE from STORE where FAVORITE = 1; ";
+        Cursor newCursor = db.rawQuery(query,null);
+        ListView listFavorites = (ListView) findViewById(R.id.list_favorites);
+        CursorAdapter adapter = (CursorAdapter) listFavorites.getAdapter();
+        adapter.changeCursor(newCursor);
+        favoritesCursor = newCursor;
     }
 }
