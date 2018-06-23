@@ -31,14 +31,17 @@ public class TopLevelActivity extends Activity {
 
     private void setupFavoriteListView() {
         ListView listFavorites = (ListView) findViewById(R.id.list_favorites);
-
         try {
             SQLiteOpenHelper starbuzzDatabaseHelper = new StarbuzzDatabaseHelper(this);
             db = starbuzzDatabaseHelper.getReadableDatabase();
-            favoritesCursor = db.query(StarbuzzDatabaseHelper.TABLE_DRINK,
-                    new String[]{"_id", "NAME"},
-                    "FAVORITE = 1",
-                    null,null,null,null);
+//            favoritesCursor = db.query(StarbuzzDatabaseHelper.TABLE_DRINK,
+//                    new String[]{"_id", "NAME"},
+//                    "FAVORITE = 1",
+//                    null,null,null,null);
+            String query = "select _id, NAME, 'DRINK' as TYPE from DRINK where FAVORITE = 1 union " +
+                    "select _id, NAME, 'FOOD' as TYPE from FOOD where FAVORITE = 1 union " +
+                    "select _id, NAME, 'STORE' as TYPE from STORE where FAVORITE = 1; ";
+            favoritesCursor = db.rawQuery(query,null);
             CursorAdapter favoriteAdapter = new SimpleCursorAdapter(TopLevelActivity.this,
                     android.R.layout.simple_list_item_1,
                     favoritesCursor,
@@ -51,10 +54,30 @@ public class TopLevelActivity extends Activity {
         }
 
         listFavorites.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            int i=0;
+            Intent intent = null;
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(TopLevelActivity.this, DrinkActivity.class);
-                intent.putExtra(DrinkActivity.EXTRA_DRINKID, (int)id);
+                System.out.println(position);
+                while (i++!=position);
+                favoritesCursor.moveToPosition(--i);
+                System.out.println(favoritesCursor.getString(2));
+
+                String type = favoritesCursor.getString(2);
+                switch (type)
+                {
+                    case "DRINK":{
+                        intent = new Intent(TopLevelActivity.this, DrinkActivity.class);
+                        intent.putExtra(DrinkActivity.EXTRA_DRINKID, (int)id);
+                    }break;
+                    case "FOOD": {
+                        intent = new Intent(TopLevelActivity.this, FoodActivity.class);
+                        intent.putExtra(FoodActivity.EXTRA_FOODID, (int)id);
+                    }break;
+                    case "STORE":{
+                        intent = new Intent(TopLevelActivity.this, StoreActivity.class);
+                        intent.putExtra(StoreActivity.EXTRA_STOREID, (int)id);}break;
+                }
                 startActivity(intent);
             }
         });
