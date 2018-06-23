@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/*Para SQLite*/
 import android.widget.Toast;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -52,6 +53,5 @@ public class DrinkActivity extends Activity {
             Toast toast = Toast.makeText(this,"Database unavailable", Toast.LENGTH_SHORT);
             toast.show();
         }
-
     }
 }
